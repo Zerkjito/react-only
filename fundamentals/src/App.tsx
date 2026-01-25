@@ -11,15 +11,15 @@ interface Post {
 function App() {
   const [count, setCount] = useState(0);
   const [data, setData] = useState<Post[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [hasError, setHasError] = useState('');
 
   const increment = () => setCount((c) => c + 1);
 
   useEffect(() => {
     const fetchData = async () => {
-      setLoading(true);
-      setError('');
+      setIsLoading(true);
+      setHasError('');
 
       try {
         const response = await fetch(
@@ -31,13 +31,13 @@ function App() {
         setData(result);
       } catch (err) {
         if (err instanceof Error) {
-          setError(err.message);
+          setHasError(err.message);
         } else {
-          setError('Unknown error');
+          setHasError('Unknown error');
         }
         console.error('Error loading data:', err);
       } finally {
-        setLoading(false);
+        setIsLoading(false);
       }
     };
     fetchData();
@@ -55,10 +55,10 @@ function App() {
         Fetched posts:
       </h3>
 
-      {loading && <p>Loading data...</p>}
-      {error && <p style={{ color: 'red' }}>Error: ${error}</p>}
+      {isLoading && <p>Loading data...</p>}
+      {hasError && <p style={{ color: 'red' }}>Error: ${hasError}</p>}
 
-      {!loading && !error && (
+      {!isLoading && !hasError && (
         <ol>
           {data.map((item) => (
             <li key={item.id}>
