@@ -6,9 +6,9 @@
 
 - React es una librería que se usa junto a otros frameworks, e.g., NextJS, Remix, JSolid, etc.
 - Su principal propósito es construir interfaces UI (con o sin frameworks).
-- React se instala mediante un bundler, e.g., Vite, WebStack (desaconsejado totalmente ya que usaba CRA), o Bun (muy ligero, aunque este no es exactamente un bundler per se, es all-in-one: runtime + bundler + package manager).
+- React se instala mediante un bundler, e.g., Vite, WebStack (desaconsejado hoy en día ya que usa CRA), o Bun (ultra ligero, aunque este no es exactamente un bundler per se, es all-in-one: runtime + bundler + package manager).
 - React está principalmente enfocado para SPA(s), en cuyo caso todo se carga a través de un único `index.html` que va re-renderizando los componentes que hacen falta, lo cual ocurre mediante **triggers** (e.g., apretar un botón, realizar un fetch a un API endpoint, un estado interno, etc.).
-- Permite nativamente **HMR (Hot Module Reload)** para ver en tiempo real los cambios sin tener que recargar toda la app.
+- Permite nativamente **HMR (Hot Module Replacement)** para ver en tiempo real los cambios sin tener que recargar toda la app.
 - No es tan bueno cuando hay que separar parte privada y parte pública (ahí entra en juego NextJS). La razón es simple: React solo maneja UI, no implementa routing ni SSR por defecto. NextJS o similares ofrecen funcionalidades para routing complejo, SSR, SEO, etc.
 
 ---
@@ -16,7 +16,7 @@
 ## Distinción entre 2 tipos de Triggers
 
 - **Trigger inicial (mounting):** ocurre cuando se monta un componente por primera vez en el DOM.
-- **Re-render:** ocurre cuando se renderiza un componente nuevamente tras un cambio (e.g., click en botón, llamada async, cambio de estado). **Cuidado con este!**
+- **Re-render:** ocurre cuando se renderiza un componente nuevamente tras un cambio (e.g., click en botón, llamada async, cambio de estado). **Hay que tener cuidado con este**
 
 ---
 
@@ -43,9 +43,27 @@
 
 ## React Hooks
 
+### useState
+
+Se trata del hook fundamental para agregar memoria a un componente funcional. Devuelve un array con dos elementos mediante destructuring (variable de estado o snapshot y su setter).
+
+**Conceptos clave:**
+
+- Inmutabilidad: crucial no modificar el estado directamente sino mediante su respectivo setter.
+- Snapshots: estos en realidad no son asíncronos per se, sino que React los agenda para el siguiente render.
+- Batching: se agrupan las actualizaciones de estado en un solo re-render para mejorar rendimiento.
+
+**Buenas prácticas:**
+
+- Naming adecuado y consistente
+- Si existe dependency (e.g, el nuevo estado depende del anterior), es más seguro usar forma función para evitar bugs por batching.
+- Siempre que dos o más componentes compartan datos, es ideal mover el estado al padre común más cercano y pasarle hacia abajo mediante Props (Lifting State Up).
+
 ### useEffect
 
 Este hook sirve para manejar el ciclo de vida de un componente, pero con alguno matices. Casi siempre se usa con una **dependency list**, lo cual es el o los componentes a los que va a afectar cada vez que realicen un render. Omitirlo es muy mala práctica e implica que cualquier cambio en el componente aplique el useEffect. Su trigger ocurre ya sea por el mounting inicial de un componente, la modificación de algún valor de la dependency list, o la ejecución del return (destrucción)
+
+**Consejo:** casi siempre preguntarse si se debe cambiar algo externo, que proviene de fuera, si la respuesta es que sí, muy problablmente useEffect tenga cabida y sentido, aunque siempre hay excepciones.
 
 Casos de uso más comúnes:
 
