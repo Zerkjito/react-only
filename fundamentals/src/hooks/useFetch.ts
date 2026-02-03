@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 type Data<T> = T | null;
-type ErrorOrNull = Error | null;
+type ErrorOrNull = unknown | null;
 
 interface Props<T> {
   data: Data<T>;
@@ -16,6 +16,9 @@ export const useFetch = <T>(url: string): Props<T> => {
 
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true);
+      setError(null);
+
       try {
         const response = await fetch(url);
 
@@ -26,7 +29,7 @@ export const useFetch = <T>(url: string): Props<T> => {
         const jsonData: T = await response.json();
         setData(jsonData);
       } catch (err) {
-        setError(err as ErrorOrNull);
+        setError(err);
       } finally {
         setLoading(false);
       }
