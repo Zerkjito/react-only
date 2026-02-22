@@ -14,6 +14,9 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [hasError, setHasError] = useState('');
 
+  const [note, setNote] = useState('');
+  const [isSaving, setIsSaving] = useState(false);
+
   const increment = () => setCount((c) => c + 1);
 
   // aquí es importante abortar una vez se desmonta el componente o si alguien fue a otra página para que no se acumulen
@@ -60,8 +63,34 @@ function App() {
     document.title = `Posts cargados: ${data.length} | Click: ${count}`;
   }, [data, count]);
 
+  // también se podría usar useRef para controlar el estado inicial, aunque con !note ya sirve
+  useEffect(() => {
+    if (!note || note.trim() === '') return;
+
+    setIsSaving(true);
+    const timeoutId = setTimeout(() => {
+      console.log('Guardando nota:', note);
+      setIsSaving(false);
+    }, 1000);
+
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, [note]);
+
   return (
     <div className="App">
+      <div style={{ display: 'flex', flexDirection: 'column' }}>
+        <h1 style={{ color: 'red' }}>Ejemplo con debounce</h1>
+        <input
+          style={{ marginBlock: '1.5rem', padding: '0.8rem' }}
+          type="text"
+          value={note}
+          onChange={(e) => setNote(e.target.value)}
+          placeholder="Escribe algo..."
+        />
+        <p>{note}</p>
+      </div>
       <Button label={`Count is ${count}`} onClick={increment} />
       <h3
         style={{
