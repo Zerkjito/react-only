@@ -65,6 +65,11 @@ Este hook sirve para manejar el ciclo de vida de un componente, pero con alguno 
 
 **Consejo:** casi siempre preguntarse si se debe cambiar algo externo, que proviene de fuera, si la respuesta es que sí, muy problablmente useEffect tenga cabida y sentido, aunque siempre hay excepciones.
 
+Importante, ¿cómo saber cuándo hay que realizar una cleanup function? La respuesta viene dada por el contexto:
+
+- Si se trata de una operación síncrona, entonces no hay penalización por no abortar o cancelar eventos
+- Si se trata de una operación asícnrona, entonces casi con total seguridad haya que valorar realizar la cleanup funcion antes de desmontar el componente
+
 Casos de uso más comúnes:
 
 - comunicarse con un endpoint
