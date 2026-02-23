@@ -78,6 +78,50 @@ function App() {
     };
   }, [note]);
 
+  function Counter() {
+    const [newCount, setNewCount] = useState(0);
+    const [calculation, setCalculation] = useState(0);
+
+    useEffect(() => {
+      setCalculation(() => newCount * 2);
+    }, [newCount]);
+
+    return (
+      <>
+        <p>Count: {newCount}</p>
+        <button onClick={() => setNewCount((c) => c + 1)}>+</button>
+        <p>Calculation: {calculation}</p>
+      </>
+    );
+  }
+
+  function GlobalMouseTracker() {
+    const [coords, setCoords] = useState({ x: 0, y: 0 });
+
+    useEffect(() => {
+      const handleMouseMove = (e: MouseEvent) => {
+        setCoords({
+          x: e.clientX,
+          y: e.clientY,
+        });
+      };
+      window.addEventListener('mousemove', handleMouseMove);
+
+      return () => {
+        window.removeEventListener('mousemove', handleMouseMove);
+        console.log('Limpieza: Evento eliminado');
+      };
+    }, []);
+
+    return (
+      <>
+        <h1>Real time coordinates:</h1>
+        <p>X-axis: {coords.x}</p>
+        <p>Y-axis: {coords.y}</p>
+      </>
+    );
+  }
+
   return (
     <div className="App">
       <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -91,6 +135,10 @@ function App() {
         />
         <p>{note}</p>
       </div>
+      <hr />
+      <Counter />
+      <hr />
+      <GlobalMouseTracker />
       <Button label={`Count is ${count}`} onClick={increment} />
       <h3
         style={{
