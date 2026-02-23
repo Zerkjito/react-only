@@ -5,22 +5,24 @@ type ErrorOrNull = unknown | null;
 
 interface Props<T> {
   data: Data<T>;
-  loading: boolean;
-  error: ErrorOrNull;
+  isLoading: boolean;
+  hasError: ErrorOrNull;
 }
 
 export const useFetch = <T>(url: string): Props<T> => {
   const [data, setData] = useState<Data<T>>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<ErrorOrNull>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [hasError, setHasError] = useState<ErrorOrNull>(null);
 
   useEffect(() => {
+    const controller = new AbortController();
+
     const fetchData = async () => {
-      setLoading(true);
-      setError(null);
+      setIsLoading(true);
+      setHasError(null);
 
       try {
-        const response = await fetch(url);
+        const response = await fetch(url, { signal: controller.signal });
 
         if (!response.ok) {
           throw new Error('Error en la petición');
@@ -29,14 +31,25 @@ export const useFetch = <T>(url: string): Props<T> => {
         const jsonData: T = await response.json();
         setData(jsonData);
       } catch (err) {
-        setError(err);
+        if (err instanceof DOMException && err.name === 'AbortError') {
+          console.log('Petición cancelada');
+          return;
+        }
+
+        setHasError(err);
       } finally {
-        setLoading(false);
+        if (!controller.signal.aborted) {
+          setIsLoading(false);
+        }
       }
     };
 
     fetchData();
+
+    return () => {
+      controller.abort();
+    };
   }, [url]);
 
-  return { data, loading, error };
+  return { data, isLoading, hasError };
 };
