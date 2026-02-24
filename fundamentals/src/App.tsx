@@ -6,6 +6,7 @@ import {
   Timer,
   WeatherApp,
   GlobalMouseTracker,
+  Card,
 } from './components';
 import { useFetch } from './hooks';
 
@@ -105,13 +106,27 @@ function App() {
       {hasError && <p style={{ color: 'red' }}>Error: {hasError}</p>}
 
       {!isLoading && !hasError && data && (
-        <ol>
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit,minmax(350px,1fr))',
+            gap: '1rem',
+          }}
+        >
           {data.map((item) => (
-            <li key={item.id}>
-              <strong>{item.title}</strong>
-            </li>
+            <Card>
+              <Card.Image
+                src="https://placehold.co/100x100"
+                alt="Placeholder"
+              />
+              <Card.Header>POST ID: {item?.id}</Card.Header>
+              <Card.Body>{item?.body}</Card.Body>
+              <Card.Footer>
+                Footer {new Date().getFullYear()} - All rights reserved
+              </Card.Footer>
+            </Card>
           ))}
-        </ol>
+        </div>
       )}
     </div>
   );
