@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
-import { Button, SessionTimer, Timer, WeatherApp } from './components';
+import {
+  Button,
+  SessionTimer,
+  Timer,
+  WeatherApp,
+  GlobalMouseTracker,
+} from './components';
 import { useFetch } from './hooks';
 
 interface Post {
@@ -11,33 +17,6 @@ interface Post {
 
 const url = 'https://jsonplaceholder.typicode.com/posts';
 
-function GlobalMouseTracker() {
-  const [coords, setCoords] = useState({ x: 0, y: 0 });
-
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      setCoords({
-        x: e.clientX,
-        y: e.clientY,
-      });
-    };
-    window.addEventListener('mousemove', handleMouseMove);
-
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-      console.log('Limpieza: Evento eliminado');
-    };
-  }, []);
-
-  return (
-    <>
-      <h1>Real time coordinates:</h1>
-      <p>X-axis: {coords.x}</p>
-      <p>Y-axis: {coords.y}</p>
-    </>
-  );
-}
-
 interface AnotherCounterProps {
   count: number;
   setCount: React.Dispatch<React.SetStateAction<number>>;
@@ -46,10 +25,9 @@ interface AnotherCounterProps {
 function AnotherCounter({ count, setCount }: AnotherCounterProps) {
   return (
     <>
-      <Button
-        label={`Count is ${count}`}
-        onClick={() => setCount((c: number) => c + 1)}
-      />
+      <Button onClick={() => setCount((c) => c + 1)}>
+        <Button.Text>Aumentar</Button.Text>
+      </Button>
     </>
   );
 }
@@ -58,48 +36,10 @@ function App() {
   const [count, setCount] = useState(0);
 
   const [note, setNote] = useState('');
-  const [isSaving, setIsSaving] = useState(false);
 
   const { data, isLoading, hasError } = useFetch<Post[]>(url);
 
-  // aquí es importante abortar una vez se desmonta el componente o si alguien fue a otra página para que no se acumulen
-  // useEffect(() => {
-  //   const controller = new AbortController();
-
-  //   const fetchData = async () => {
-  //     setIsLoading(true);
-  //     setHasError('');
-  //     try {
-  //       const response = await fetch(
-  //         'https://jsonplaceholder.typicode.com/posts',
-  //         { signal: controller.signal },
-  //       );
-  //       if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
-
-  //       const result = await response.json();
-  //       setData(result);
-  //     } catch (err) {
-  //       if (err instanceof DOMException && err.name === 'AbortError') {
-  //         return;
-  //       }
-
-  //       if (err instanceof Error) {
-  //         setHasError(err.message);
-  //       } else {
-  //         setHasError('Unknown error');
-  //       }
-  //       console.error('Error loading data:', err);
-  //     } finally {
-  //       if (!controller.signal.aborted) {
-  //         setIsLoading(false);
-  //       }
-  //     }
-  //   };
-  //   fetchData();
-  //   return () => {
-  //     controller.abort();
-  //   };
-  // }, []);
+  const [showWidgets, setShowWidgets] = useState(true);
 
   // aquí no tiene sentido cancelar o abortar nada, no hay penalización por no hacerlo
   useEffect(() => {
@@ -109,11 +49,8 @@ function App() {
   // también se podría usar useRef para controlar el estado inicial, aunque con !note ya sirve
   useEffect(() => {
     if (!note || note.trim() === '') return;
-
-    setIsSaving(true);
     const timeoutId = setTimeout(() => {
       console.log('Guardando nota:', note);
-      setIsSaving(false);
     }, 1000);
 
     return () => {
@@ -135,15 +72,26 @@ function App() {
         <p>{note}</p>
       </div>
       <hr />
-      <GlobalMouseTracker />
+      <Button onClick={() => setShowWidgets(!showWidgets)}>
+        <Button.Text>
+          {showWidgets ? 'Ocultar widgets' : 'Mostrar widgets'}
+        </Button.Text>
+      </Button>
       <hr />
-      <AnotherCounter count={count} setCount={setCount} />
-      <hr />
-      <Timer />
-      <hr />
-      <WeatherApp />
-      <hr />
-      <SessionTimer />
+
+      {showWidgets && (
+        <>
+          <GlobalMouseTracker />
+          <hr />
+          <AnotherCounter count={count} setCount={setCount} />
+          <hr />
+          <Timer />
+          <hr />
+          <WeatherApp />
+          <hr />
+          <SessionTimer />
+        </>
+      )}
       <h3
         style={{
           backgroundColor: 'blue',

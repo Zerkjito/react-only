@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 type Data<T> = T | null;
-type ErrorOrNull = unknown | null;
+type ErrorOrNull = string | null;
 
 interface Props<T> {
   data: Data<T>;
@@ -36,7 +36,9 @@ export const useFetch = <T>(url: string): Props<T> => {
           return;
         }
 
-        setHasError(err);
+        setHasError(
+          err instanceof Error ? err.message : 'Ocurrió un error ineseperado',
+        );
       } finally {
         if (!controller.signal.aborted) {
           setIsLoading(false);

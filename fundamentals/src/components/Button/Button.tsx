@@ -1,14 +1,25 @@
+import type { ReactNode } from 'react';
 import './Button.css';
 
-interface Props {
-  label: string;
+interface ButtonProps {
+  children: ReactNode;
   onClick: () => void;
 }
 
-export const Button = ({ label, onClick }: Props) => {
+interface ButtonTextProps {
+  children: ReactNode;
+}
+
+export const Button = ({ children, onClick }: ButtonProps) => {
   return (
     <button className="custom-btn" onClick={onClick}>
-      {label}
+      {children}
     </button>
   );
 };
+
+const ButtonText = ({ children }: ButtonTextProps) => {
+  return <span>{children}</span>;
+};
+
+Button.Text = ButtonText;
