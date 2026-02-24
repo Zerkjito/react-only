@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
-import { Button, Timer, WeatherApp } from './components';
+import { Button, SessionTimer, Timer, WeatherApp } from './components';
 import { useFetch } from './hooks';
 
 interface Post {
@@ -142,6 +142,8 @@ function App() {
       <Timer />
       <hr />
       <WeatherApp />
+      <hr />
+      <SessionTimer />
       <h3
         style={{
           backgroundColor: 'blue',
