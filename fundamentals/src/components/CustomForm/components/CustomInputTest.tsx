@@ -1,9 +1,9 @@
 import {
   Controller,
-  type FieldError,
   type Control,
-  type Path,
+  type FieldError,
   type FieldValues,
+  type Path,
 } from 'react-hook-form';
 
 interface InputProps<T extends FieldValues> {
@@ -14,7 +14,7 @@ interface InputProps<T extends FieldValues> {
   error?: FieldError;
 }
 
-export const CustomInputForm = <T extends FieldValues>({
+export const CustomInputFormTest = <T extends FieldValues>({
   name,
   control,
   label,
@@ -32,7 +32,8 @@ export const CustomInputForm = <T extends FieldValues>({
             {...field}
             id={name}
             type={type}
-            className={`form-control ${error?.message ? 'is-invalid' : ''}`}
+            aria-invalid={error ? 'true' : 'false'}
+            className={`control-group ${error ? 'error' : ''}`}
           />
         )}
       />
