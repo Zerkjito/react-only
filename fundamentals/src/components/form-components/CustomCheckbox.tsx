@@ -1,26 +1,24 @@
 import {
   Controller,
-  type FieldError,
   type Control,
-  type Path,
+  type FieldError,
   type FieldValues,
+  type Path,
 } from 'react-hook-form';
 
-interface InputProps<T extends FieldValues> {
+interface CheckBoxProps<T extends FieldValues> {
   name: Path<T>;
   control: Control<T>;
   label: string;
-  type?: string;
   error?: FieldError;
 }
 
-export const CustomInputForm = <T extends FieldValues>({
+export const CustomCheckbox = <T extends FieldValues>({
   name,
   control,
   label,
-  type = 'text',
   error,
-}: InputProps<T>) => {
+}: CheckBoxProps<T>) => {
   return (
     <div className="form-group">
       <label htmlFor={name}>{label}</label>
@@ -29,10 +27,11 @@ export const CustomInputForm = <T extends FieldValues>({
         control={control}
         render={({ field }) => (
           <input
-            {...field}
             id={name}
-            type={type}
-            className={`form-control ${error?.message ? 'is-invalid' : ''}`}
+            type="checkbox"
+            checked={field.value}
+            onChange={field.onChange}
+            required={true}
           />
         )}
       />

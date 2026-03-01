@@ -1,4 +1,4 @@
-import { useFetch } from '../../hooks';
+import { useFetch } from '../../../hooks';
 
 type CurrentWeather = {
   temperature_2m: number;

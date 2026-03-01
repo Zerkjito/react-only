@@ -40,3 +40,30 @@
 .read-the-docs {
   color: #888;
 }
+
+form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  background-color: #25333c;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4 12px rgba(0, 0, 0, 0.2);
+  gap: 2rem;
+}
+
+form input {
+  padding: 0.6rem;
+  outline: none;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.error {
+  min-height: 1.2rem;
+  color: crimson;
+  font-size: 0.85rem;
+}
